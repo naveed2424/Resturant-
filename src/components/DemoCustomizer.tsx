@@ -82,7 +82,7 @@ export const DemoCustomizer: React.FC<DemoCustomizerProps> = ({
     });
   };
 
-  const handleCopyConfigSnippet = () => {
+  const handleCopyConfigSnippet = async () => {
     const snippet = `// Configuration client pour : ${currentConfig.name}
 export const RESTAURANT_CONFIG = {
   name: "${currentConfig.name}",
@@ -93,9 +93,17 @@ export const RESTAURANT_CONFIG = {
   locationCity: "Paris",
   locationCountry: "France"
 };`;
-    navigator.clipboard.writeText(snippet);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(snippet);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.warn('Clipboard write failed:', e);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (

@@ -1,17 +1,108 @@
 <!doctype html>
 <html lang="fr">
   <head>
+    <!-- Prevent "Cannot set property fetch of #<Window> which has only a getter" in sandboxed environments -->
+    <script>
+      (function() {
+        try {
+          var target = typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : null);
+          if (!target) return;
+          var currentFetch = typeof target.fetch === 'function' ? target.fetch.bind(target) : target.fetch;
+          
+          if (typeof Window !== 'undefined' && Window.prototype) {
+            try {
+              var protoDesc = Object.getOwnPropertyDescriptor(Window.prototype, 'fetch');
+              if (protoDesc && (!protoDesc.writable && !protoDesc.set)) {
+                Object.defineProperty(Window.prototype, 'fetch', {
+                  get: function() { return currentFetch; },
+                  set: function(fn) { currentFetch = fn; },
+                  configurable: true,
+                  enumerable: true
+                });
+              }
+            } catch (e1) {}
+          }
+
+          try {
+            var targetDesc = Object.getOwnPropertyDescriptor(target, 'fetch');
+            if (!targetDesc || (!targetDesc.writable && !targetDesc.set) || targetDesc.configurable) {
+              Object.defineProperty(target, 'fetch', {
+                get: function() { return currentFetch; },
+                set: function(fn) { currentFetch = fn; },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          } catch (e2) {}
+        } catch (e) {}
+      })();
+    </script>
+    <!-- Prevent third-party extension failures (such as MetaMask in sandboxed iframes) from crashing the application -->
+    <script>
+      (function() {
+        try {
+          var isExtensionError = function(msg) {
+            if (!msg) return false;
+            var text = '';
+            if (typeof msg === 'string') {
+              text = msg;
+            } else if (msg instanceof Error || (typeof msg === 'object' && msg.message)) {
+              text = msg.message;
+            } else {
+              try { text = String(msg); } catch(e) {}
+            }
+            return /metamask|ethereum|web3|solana|phantom|tronlink|coinbase/i.test(text);
+          };
+
+          window.addEventListener('error', function(e) {
+            if (isExtensionError(e.message) || isExtensionError(e.error)) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              return true;
+            }
+          }, true);
+
+          window.addEventListener('unhandledrejection', function(e) {
+            if (isExtensionError(e.reason)) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+            }
+          }, true);
+
+          var prevOnError = window.onerror;
+          window.onerror = function(msg, url, line, col, error) {
+            if (isExtensionError(msg) || isExtensionError(error)) {
+              return true;
+            }
+            if (typeof prevOnError === 'function') {
+              return prevOnError.apply(this, arguments);
+            }
+            return false;
+          };
+
+          var prevOnUnhandled = window.onunhandledrejection;
+          window.onunhandledrejection = function(e) {
+            if (isExtensionError(e && e.reason)) {
+              return true;
+            }
+            if (typeof prevOnUnhandled === 'function') {
+              return prevOnUnhandled.apply(this, arguments);
+            }
+          };
+        } catch (e) {}
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maison Marée Paris | Restaurant de Fruits de Mer & Bar à Huîtres</title>
-    <meta name="description" content="Découvrez les huîtres affinées, poissons de ligne et plateaux de fruits de mer chez Maison Marée au cœur de Paris. Consultez la carte, nos horaires et réservez votre table." />
+    <title>Maison Marée Paris - Restaurant de Fruits de Mer & Bar à Huîtres</title>
+    <meta name="description" content="Site web vitrine premium pour restaurant de fruits de mer et bar à huîtres à Paris. Architecture statique prête pour Netlify avec personnalisation express." />
     <link rel="canonical" href="https://maisonmaree-paris.fr/" />
     
     <!-- OpenGraph / Facebook -->
     <meta property="og:type" content="restaurant" />
     <meta property="og:site_name" content="Maison Marée Paris" />
-    <meta property="og:title" content="Maison Marée Paris | Restaurant de Fruits de Mer & Bar à Huîtres" />
-    <meta property="og:description" content="Huîtres affinées, poissons de ligne et plateaux de fruits de mer au cœur de Paris. Une expérience iodée d'exception." />
+    <meta property="og:title" content="Maison Marée Paris - Restaurant de Fruits de Mer & Bar à Huîtres" />
+    <meta property="og:description" content="Site web vitrine premium pour restaurant de fruits de mer et bar à huîtres à Paris. Architecture statique prête pour Netlify avec personnalisation express." />
     <meta property="og:image" content="https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=1200&q=80" />
     
     <!-- Twitter / X -->

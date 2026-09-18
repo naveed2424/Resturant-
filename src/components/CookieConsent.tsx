@@ -9,20 +9,39 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({ onOpenCookiesInfo 
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const hasConsented = localStorage.getItem('mm_cookie_consent');
-    if (!hasConsented) {
-      const timer = setTimeout(() => setVisible(true), 1500);
-      return () => clearTimeout(timer);
+    try {
+      const hasConsented = typeof window !== 'undefined' && window.localStorage 
+        ? window.localStorage.getItem('mm_cookie_consent') 
+        : null;
+      if (!hasConsented) {
+        const timer = setTimeout(() => setVisible(true), 1500);
+        return () => clearTimeout(timer);
+      }
+    } catch (e) {
+      // Storage access may be denied in sandboxed iframes
+      console.warn('LocalStorage not accessible:', e);
     }
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem('mm_cookie_consent', 'accepted');
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem('mm_cookie_consent', 'accepted');
+      }
+    } catch (e) {
+      console.warn('Could not save cookie preference:', e);
+    }
     setVisible(false);
   };
 
   const handleDecline = () => {
-    localStorage.setItem('mm_cookie_consent', 'declined');
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem('mm_cookie_consent', 'declined');
+      }
+    } catch (e) {
+      console.warn('Could not save cookie preference:', e);
+    }
     setVisible(false);
   };
 
