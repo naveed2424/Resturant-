@@ -1,0 +1,6 @@
+{
+  "name": "Maison Marée Paris - Restaurant de Fruits de Mer & Bar à Huîtres",
+  "description": "Site web vitrine premium pour restaurant de fruits de mer et bar à huîtres à Paris. Architecture statique prête pour Netlify avec personnalisation express.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

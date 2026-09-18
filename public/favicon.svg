@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#0C1B2A"/>
+  <!-- Stylized Oyster shell and pearl motif -->
+  <path d="M32 14C20 14 14 26 14 36C14 46 22 50 32 50C42 50 50 46 50 36C50 26 44 14 32 14Z" stroke="#D4AF37" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M32 18C24 22 20 30 20 38C20 44 25 47 32 47C39 47 44 44 44 38C44 30 40 22 32 18Z" stroke="#E6C875" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <circle cx="32" cy="38" r="6" fill="#F8FAFC" stroke="#D4AF37" stroke-width="2"/>
+  <circle cx="30.5" cy="36.5" r="1.5" fill="#FFFFFF"/>
+</svg>
